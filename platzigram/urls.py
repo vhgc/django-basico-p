@@ -16,29 +16,20 @@ Including another URLconf
 """ Platzigram URLs module"""
 
 # Django
-from os import name
 from django.contrib import admin
 from django.conf import settings
+
 # Manejo de archivos estáticos
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path, include
 
-from platzigram import views as local_views
-from posts import views as posts_views
-from users import views as users_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello-world/', local_views.hello_world, name='hello-world'),
-    path('sorted/', local_views.sort_integers, name='sort'),           #http://localhost:8000/sorted/?numbers=2,44,51,23,5,52
-    path('hi/<str:name>/<int:age>/', local_views.say_hi, name="hi"), # http://localhost:8000/hi/Jose/10/
 
-    path('', posts_views.list_posts, name='feed'),
-    path('posts/new/', posts_views.create_post, name="create_post"),
+    path('', include(('posts.urls', 'posts'), namespace='posts')),
+    path('users/', include(('users.urls', 'users'), namespace='users')),
 
-    path('users/login/', users_views.login_view, name='login'),
-    path('users/logout/', users_views.logout_view, name='logout'),
-    path('users/signup/', users_views.signup, name='signup'),
-    path('users/me/profile', users_views.update_profile, name='update_profile'),
-
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
